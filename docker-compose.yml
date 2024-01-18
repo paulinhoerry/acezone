@@ -1,0 +1,38 @@
+---
+version: '3.9'
+
+services:
+    postgresdb:
+        container_name: postgresdb
+        profiles: [services]
+        image: timescale/timescaledb:latest-pg14
+        ports:
+            - 5433:5432
+        environment:
+            POSTGRES_USER: admintennis
+            POSTGRES_PASSWORD: tsitsip@s2024
+            POSTGRES_DB: tennis
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+          - postgres-compose-network
+
+    pgadmin:
+        image: dpage/pgadmin4
+        profiles: [services]
+        environment:
+          PGADMIN_DEFAULT_EMAIL: "admin@admin.com.br"
+          PGADMIN_DEFAULT_PASSWORD: "PgAdmin2019!"
+        ports:
+          - 12543:80
+        depends_on:
+          - postgresdb
+        networks:
+          - postgres-compose-network
+
+networks:
+  postgres-compose-network:
+    driver: bridge
+
+volumes:
+    postgres_data:
